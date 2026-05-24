@@ -478,7 +478,7 @@ async function tutorAsk(text,imgB64,imgType){
   try{
     const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer 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','HTTP-Referer':'https://github.com','X-Title':'F2 Maths Tutor'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer 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','HTTP-Referer':'https://jnwongyc-rgb.github.io','X-Title':'F2 Maths Tutor'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1600,system:TUTOR_SYS,messages:tutorHistory})
     });
     const data=await res.json();
@@ -539,8 +539,8 @@ async function generateExercise(){
   try{
     const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer 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','HTTP-Referer':'https://github.com','X-Title':'F2 Maths Tutor'},
-      body:JSON.stringify({model:'meta-llama/llama-3.1-8b-instruct:free',max_tokens:3000,messages:[{role:'system',content:EX_SYS},{role:'user',content:prompt}]})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer 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','HTTP-Referer':'https://jnwongyc-rgb.github.io','X-Title':'F2 Maths Tutor'},
+      body:JSON.stringify({model:'mistralai/mistral-7b-instruct:free',max_tokens:3000,messages:[{role:'system',content:EX_SYS},{role:'user',content:prompt}]})
     });
     const data=await res.json();
     let raw=data.choices?.[0]?.message?.content||'[]';
