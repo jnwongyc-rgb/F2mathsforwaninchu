@@ -276,6 +276,9 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 
 <script>
 /* ── SYSTEMS ── */
+// ⚙️ 將你嘅 Cloudflare Worker URL 貼喺呢度
+
+
 const TUTOR_SYS = `你係一位香港中二數學補習老師，專門幫學生備考。學生距離考試只有兩個禮拜，目標合格。
 
 12個Chapter範疇：
@@ -473,13 +476,13 @@ async function tutorAsk(text,imgB64,imgType){
   showTyping();
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer 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','HTTP-Referer':'https://github.com','X-Title':'F2 Maths Tutor'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1600,system:TUTOR_SYS,messages:tutorHistory})
     });
     const data=await res.json();
-    const reply=data.content?.find(b=>b.type==='text')?.text||'唔好意思，出咗問題，請再試！';
+    const reply=data.choices?.[0]?.message?.content||'唔好意思，出咗問題，請再試！';
     tutorHistory.push({role:'assistant',content:reply});
     removeTyping();
     addTutorMsg('bot',parseAndRender(reply));
@@ -534,13 +537,13 @@ async function generateExercise(){
   const prompt=`為香港中二學生出 ${count} 條考試題目。範圍：${scope}。題型：${typeInstr}。難度：真實HK中二學校考試中等程度。只返回JSON陣列，直接由[開始。`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,system:EX_SYS,messages:[{role:'user',content:prompt}]})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer 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','HTTP-Referer':'https://github.com','X-Title':'F2 Maths Tutor'},
+      body:JSON.stringify({model:'meta-llama/llama-3.1-8b-instruct:free',max_tokens:3000,messages:[{role:'system',content:EX_SYS},{role:'user',content:prompt}]})
     });
     const data=await res.json();
-    let raw=data.content?.find(b=>b.type==='text')?.text||'[]';
+    let raw=data.choices?.[0]?.message?.content||'[]';
     raw=raw.replace(/^[\s\S]*?(\[)/,'[').replace(/\][\s\S]*$/,']');
     exQuestions=JSON.parse(raw);
     renderExercise(exQuestions);
